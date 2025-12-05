@@ -24,21 +24,27 @@ def index():
     if flask.request.method == "GET":
         return flask.send_file(_frontend_dir / "index.html")
     else:
-        pic = flask.request.files.get("pic")
-        if not pic:
+        files = flask.request.files.getlist("pic")
+        if len(files) == 0:
             raise flask.abort(400, "No file uploaded")
-        
-        filename = werkzeug.utils.secure_filename(pic.filename)
-        if not filename:
-            raise flask.abort(400, "No file uploaded")
-        
-        file_extension = _validate_image(pic.stream)
-        filename_ext = pathlib.Path(filename).suffix.lower().lstrip(".")
-        if file_extension != filename_ext or filename_ext not in _ALLOWED_EXTENSIONS:
-            raise flask.abort(400, "Invalid image")
-        
-        pic.save(_upload_dir / filename)
+        for pic in files:
+            if not pic:
+                raise flask.abort(400, "No file uploaded")
+            
+            filename = werkzeug.utils.secure_filename(pic.filename)
+            if not filename:
+                raise flask.abort(400, "No file uploaded")
+            
+            _handle_file_upload(pic, filename)
         return flask.Response("File uploaded successfully", status=200)
+
+def _handle_file_upload(pic, filename):
+    file_extension = _validate_image(pic.stream)
+    filename_ext = pathlib.Path(filename).suffix.lower().lstrip(".")
+    if file_extension != filename_ext or filename_ext not in _ALLOWED_EXTENSIONS:
+        raise flask.abort(400, "Invalid image")
+        
+    pic.save(_upload_dir / filename)
 
 def _validate_image(stream):
     header = stream.read(512)
