@@ -1,5 +1,5 @@
 function init() {
-    console.log("loading...")
+  console.log("loading...");
   const form = document.querySelector("form"),
     fileInput = document.querySelector(".file-input"),
     progressArea = document.querySelector(".progress-area"),
@@ -22,8 +22,8 @@ function init() {
     xhr.open("POST", "/");
     let namePreview = name;
     if (name.length > 12) {
-        let shortname = name.split(".");
-        namePreview = shortname[0].substring(0, 13) + "... ." + shortname[1];
+      let shortname = name.split(".");
+      namePreview = shortname[0].substring(0, 13) + "... ." + shortname[1];
     }
     xhr.upload.addEventListener("progress", ({ loaded, total }) => {
       let fileLoaded = Math.floor((loaded / total) * 100);
@@ -65,12 +65,12 @@ function init() {
       }
     });
     xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            console.log("Upload successful");
-            return;
-        }
-        console.log("Upload failed");
-        let failedHtml = `
+      if (xhr.status >= 200 && xhr.status < 300) {
+        console.log("Upload successful");
+        return;
+      }
+      console.log("Upload failed");
+      let failedHtml = `
             <li class="row">
                 <div class="content upload">
                     <i class="fas fa-file-alt"></i>
@@ -81,8 +81,8 @@ function init() {
                 </div>
                 <i class="fas fa-times"></i>
             </li>`;
-        uploadedArea.classList.remove("onprogress");
-        uploadedArea.insertAdjacentHTML("afterbegin", failedHtml);
+      uploadedArea.classList.remove("onprogress");
+      uploadedArea.insertAdjacentHTML("afterbegin", failedHtml);
     };
     let data = new FormData(form);
     xhr.send(data);
