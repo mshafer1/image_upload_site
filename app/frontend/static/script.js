@@ -32,32 +32,34 @@ function init() {
       fileTotal < 1024
         ? (fileSize = fileTotal + " KB")
         : (fileSize = (loaded / (1024 * 1024)).toFixed(2) + " MB");
-      let progressHTML = `<li class="row">
-      <i class="fas fa-file-alt"></i>
-                          <div class="content">
-                          <div class="details">
-                          <span class="name" title="${name}">${namePreview} • Uploading</span>
-                              <span class="percent">${fileLoaded}%</span>
-                              </div>
-                              <div class="progress-bar">
-                              <div class="progress" style="width: ${fileLoaded}%"></div>
-                              </div>
-                              </div>
-                        </li>`;
+      let progressHTML = `
+        <li class="row">
+            <i class="fas fa-file-alt"></i>
+            <div class="content">
+                <div class="details">
+                    <span class="name" title="${name}">${namePreview} • Uploading</span>
+                    <span class="percent">${fileLoaded}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: ${fileLoaded}%"></div>
+                </div>
+            </div>
+        </li>`;
       uploadedArea.classList.add("onprogress");
       progressArea.innerHTML = progressHTML;
       if (loaded == total) {
         progressArea.innerHTML = "";
-        let uploadedHTML = `<li class="row">
-      <div class="content upload">
-                              <i class="fas fa-file-alt"></i>
-                              <div class="details">
-                              <span class="name" title="${name}">${namePreview} • Uploaded</span>
-                                <span class="size">${fileSize}</span>
-                              </div>
-                              </div>
-                              <i class="fas fa-check"></i>
-                              </li>`;
+        let uploadedHTML = `
+            <li class="row">
+                <div class="content upload">
+                    <i class="fas fa-file-alt"></i>
+                    <div class="details">
+                        <span class="name" title="${name}">${namePreview} • Uploaded</span>
+                        <span class="size">${fileSize}</span>
+                    </div>
+                </div>
+                <i class="fas fa-check"></i>
+            </li>`;
         uploadedArea.classList.remove("onprogress");
         uploadedArea.insertAdjacentHTML("afterbegin", uploadedHTML);
       }
@@ -68,16 +70,17 @@ function init() {
             return;
         }
         console.log("Upload failed");
-        let failedHtml = `<li class="row">
-      <div class="content upload">
-                              <i class="fas fa-file-alt"></i>
-                              <div class="details">
-                              <span class="name">${name} • Failed</span>
-                                <span class="size">&nbsp;</span>
-                              </div>
-                              </div>
-                              <i class="fas fa-times"></i>
-                              </li>`;
+        let failedHtml = `
+            <li class="row">
+                <div class="content upload">
+                    <i class="fas fa-file-alt"></i>
+                    <div class="details">
+                        <span class="name">${name} • Failed</span>
+                        <span class="size">&nbsp;</span>
+                    </div>
+                </div>
+                <i class="fas fa-times"></i>
+            </li>`;
         uploadedArea.classList.remove("onprogress");
         uploadedArea.insertAdjacentHTML("afterbegin", failedHtml);
     };
