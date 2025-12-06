@@ -20,6 +20,56 @@ function init() {
     }
   };
 
+  const dropZone = document.getElementById("drop-zone");
+
+  dropZone.addEventListener("drop", dropHandler);
+
+  window.addEventListener("drop", (e) => {
+    if ([...e.dataTransfer.items].some((item) => item.kind === "file")) {
+      e.preventDefault();
+    }
+  });
+
+  dropZone.addEventListener("dragover", (e) => {
+    const fileItems = [...e.dataTransfer.items].filter(
+      (item) => item.kind === "file"
+    );
+    if (fileItems.length > 0) {
+      e.preventDefault();
+      if (fileItems.some((item) => item.type.startsWith("image/"))) {
+        e.dataTransfer.dropEffect = "copy";
+      } else {
+        e.dataTransfer.dropEffect = "none";
+      }
+    }
+  });
+
+  window.addEventListener("dragover", (e) => {
+    const fileItems = [...e.dataTransfer.items].filter(
+      (item) => item.kind === "file"
+    );
+    if (fileItems.length > 0) {
+      e.preventDefault();
+      if (!dropZone.contains(e.target)) {
+        e.dataTransfer.dropEffect = "none";
+      }
+    }
+  });
+
+  function dropHandler(ev) {
+    ev.preventDefault();
+    console.log(ev.dataTransfer.items);
+    const files = [...ev.dataTransfer.items].map((item) => item.getAsFile());
+    console.log("files:", files);
+
+    for (const file of files) {
+      if (file) {
+        console.log("uploading file:", file.name);
+        uploadFile(file);
+      }
+    }
+  }
+
   function addProgressBar(name, namePreview, _id, preview_img) {
     let fileLoaded = 0;
     let progressHTML = `
@@ -100,12 +150,17 @@ function init() {
     };
     reader.readAsDataURL(file);
     let _id = Math.random().toString(36).substring(2, 9);
+    console.log("prepping to upload", file);
     addProgressBar(name, namePreview, _id, previewImg);
+
+    let fileSize;
+    file.size < 1024
+      ? (fileSize = file.size + " KB")
+      : (fileSize = (file.size / (1024 * 1024)).toFixed(2) + " MiB");
 
     xhr.upload.addEventListener("progress", ({ loaded, total }) => {
       let fileLoaded = Math.floor((loaded / total) * 100);
       let fileTotal = Math.floor(total / 1000);
-      let fileSize;
       fileTotal < 1024
         ? (fileSize = fileTotal + " KB")
         : (fileSize = (loaded / (1024 * 1024)).toFixed(2) + " MiB");
@@ -124,14 +179,16 @@ function init() {
       }
     });
     xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          console.log("Upload successful");
-          return;
-        }
-        console.log("Upload failed");
-        setProgressBarDone(name, namePreview, _id, fileSize, false, previewImg);
+      console.log(xhr);
+      if (xhr.status >= 200 && xhr.status < 300) {
+        console.log("Upload successful");
+        return;
+      }
+      console.log("Upload failed");
+      setProgressBarDone(name, namePreview, _id, fileSize, false, previewImg);
     };
-    let data = new FormData(form);
+    let data = new FormData();
+    data.append("pic", file);
     xhr.send(data);
   }
 }
