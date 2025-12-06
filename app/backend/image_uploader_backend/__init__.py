@@ -41,14 +41,25 @@ def index():
 
 def _handle_file_upload(pic, filename):
     file_extension = _validate_image(pic.stream)
-    filename_ext = pathlib.Path(filename).suffix.lower().lstrip(".")
+    file_pth = pathlib.Path(filename)
+    filename_ext = file_pth.suffix.lower().lstrip(".")
     _logger.info("Received:", filename, "detected ext:", file_extension)
     file_exensions_are_both_jpge = file_extension in {"jpg", "jpeg"} and filename_ext in {"jpg", "jpeg"}
     if (file_extension != filename_ext and not file_exensions_are_both_jpge) or filename_ext not in _ALLOWED_EXTENSIONS:
         _logger.warning("Rejecting %s due to mismatched extension: %s != %s", filename, file_extension, filename_ext)
         raise flask.abort(400, "Invalid image")
+    
+    dest_name = _upload_dir / filename
+    i = 1
+    while dest_name.exists():
+        filename = f"{file_pth.stem}_{i:03}{file_pth.suffix}"
+        dest_name = _upload_dir / filename
+        i += 1
+        if i > 999:
+            _logger.error("Too many files with the same name: %s", filename)
+            raise flask.abort(400, "Rejected")
         
-    pic.save(_upload_dir / filename)
+    pic.save(dest_name)
 
 def _validate_image(stream):
     header = stream.read(512)
