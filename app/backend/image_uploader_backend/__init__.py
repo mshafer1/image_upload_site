@@ -41,6 +41,7 @@ def index():
 def _handle_file_upload(pic, filename):
     file_extension = _validate_image(pic.stream)
     filename_ext = pathlib.Path(filename).suffix.lower().lstrip(".")
+    print("Received:", filename, "detected ext:", file_extension)
     if file_extension != filename_ext or filename_ext not in _ALLOWED_EXTENSIONS:
         raise flask.abort(400, "Invalid image")
         
@@ -49,7 +50,5 @@ def _handle_file_upload(pic, filename):
 def _validate_image(stream):
     header = stream.read(512)
     stream.seek(0)
-    format = imghdr.what(None, header)
-    if not format:
-        return None
-    return {"jpeg": "jpg"}.get(format, format)
+    img_format = imghdr.what(None, header)
+    return img_format
