@@ -11,15 +11,19 @@
 </head>
 <body>
   <div class="wrapper">
-    <header>File Uploader JavaScript</header>
     <form action="#">
-      <input class="file-input" type="file" name="pic" accept=".jpg, .png, .bmp, .jpeg" hidden> <!-- todo: multiple -->
+      <input class="file-input" type="file" name="pic" accept=".jpg, .png, .bmp, .jpeg" multiple="true" hidden>
       <i class="fas fa-cloud-upload-alt"></i>
-      <p>Browse File to Upload</p>
+      <p>Tap/click to select pictures to upload</p>
     </form>
     <section class="progress-area"></section>
     <section class="uploaded-area"></section>
   </div>
 
+  <div class="footer">
+    <span>
+        Background image by <a href="https://unsplash.com/@melsvision">melsvision</a> on <a href="https://unsplash.com/photos/purple-flower-in-white-background-0aUKoaw-l00">Unsplash</a>
+    </span>
+  </div>
 </body>
 </html>
