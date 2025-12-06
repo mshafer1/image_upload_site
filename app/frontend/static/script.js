@@ -23,18 +23,18 @@ function init() {
   function addProgressBar(name, namePreview, _id, preview_img) {
     let fileLoaded = 0;
     let progressHTML = `
-        <li class="row" id="${_id}">
-            <img src="${preview_img.src}" style="max-height: 40px; width: auto; max-width: 40px;" alt=""></img>
-            <div class="content">
-                <div class="details">
-                    <span class="name" title="${name}">${namePreview}<br/>Uploading</span>
-                    <span class="percent">${fileLoaded}%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress" style="width: ${fileLoaded}%"></div>
-                </div>
-            </div>
-        </li>`;
+      <li class="row" id="${_id}">
+          <img src="${preview_img.src}" style="max-height: 40px; width: auto; max-width: 40px;" alt=""></img>
+          <div class="content">
+              <div class="details">
+                  <span class="name" title="${name}">${namePreview}<br/>Uploading</span>
+                  <span class="percent">${fileLoaded}%</span>
+              </div>
+              <div class="progress-bar">
+                  <div class="progress" style="width: ${fileLoaded}%"></div>
+              </div>
+          </div>
+      </li>`;
     uploadedArea.classList.add("onprogress");
     progressArea.insertAdjacentHTML("afterbegin", progressHTML);
   }
@@ -49,16 +49,16 @@ function init() {
   ) {
     let fileLoaded = Math.floor((loaded / total) * 100);
     let progressHTML = `
-        <img src="${preview_img.src}" style="max-height: 40px; width: auto; max-width: 40px;" alt=""></img>
-        <div class="content">
-            <div class="details">
-                <span class="name" title="${name}">${namePreview}<br/>Uploading</span>
-                <span class="percent">${fileLoaded}%</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress" style="width: ${fileLoaded}%"></div>
-            </div>
-        </div>`;
+      <img src="${preview_img.src}" style="max-height: 40px; width: auto; max-width: 40px;" alt=""></img>
+      <div class="content">
+          <div class="details">
+              <span class="name" title="${name}">${namePreview}<br/>Uploading</span>
+              <span class="percent">${fileLoaded}%</span>
+          </div>
+          <div class="progress-bar">
+              <div class="progress" style="width: ${fileLoaded}%"></div>
+          </div>
+      </div>`;
     document.getElementById(_id).innerHTML = progressHTML;
   }
 
@@ -70,17 +70,17 @@ function init() {
     successful,
     previewImg
   ) {
-    resultIcon = successful ? 'fa-check' : 'fa-times';
+    resultIcon = successful ? "fa-check" : "fa-times";
     let progressHTML = `
-        <img src="${previewImg.src}" style="max-height: 40px; width: auto; max-width: 40px;" alt=""></img>
-        <div class="content upload">
-            <div class="details" style="padding-right: 5px">
-                <span class="name" title="${name}">${namePreview}<br/>Uploaded</span>
-                <span class="size">${fileSize}</span>
-            </div>
-        </div>
-        <i class="fas ${resultIcon}"></i>`;
-        uploadedArea.classList.remove("onprogress");
+      <img src="${previewImg.src}" style="max-height: 40px; width: auto; max-width: 40px;" alt=""></img>
+      <div class="content upload">
+          <div class="details" style="padding-right: 5px">
+              <span class="name" title="${name}">${namePreview}<br/>Uploaded</span>
+              <span class="size">${fileSize}</span>
+          </div>
+      </div>
+      <i class="fas ${resultIcon}"></i>`;
+    uploadedArea.classList.remove("onprogress");
     document.getElementById(_id).innerHTML = progressHTML;
   }
 
