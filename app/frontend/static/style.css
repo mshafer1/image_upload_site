@@ -109,39 +109,6 @@ section .details span {
     border-radius: inherit;
 }
 
-.uploaded-area {
-    max-height: 232px;
-    overflow-y: scroll;
-}
-
-.uploaded-area.onprogress {
-    max-height: 150px;
-}
-
-.uploaded-area::-webkit-scrollbar {
-    width: 0px;
-}
-
-.uploaded-area .row .content {
-    display: flex;
-    align-items: center;
-}
-
-.uploaded-area .row .details {
-    display: flex;
-    margin-left: 15px;
-    flex-direction: column;
-}
-
-.uploaded-area .row .details .size {
-    color: #404040;
-    font-size: 11px;
-}
-
-.uploaded-area i.fa-check {
-    font-size: 16px;
-}
-
 .footer {
     background: rgb(48, 48, 48);
     border: 2px solid black;
