@@ -1,0 +1,23 @@
+services:
+  web:
+    depends_on:
+      - db
+    build:
+      dockerfile: hosting/Dockerfile
+      context: ..
+    container_name: image_uploader_${DOMAIN}
+    env_file:
+      ../.env
+    environment:
+      - UPLOAD_DIR=/usr/local/app/uploads
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-9090}:9090"
+    volumes:
+      - "./logs:/var/log/image_uploads"
+      - "./uploads:/usr/local/app/uploads"
+      - "../app/backend:/usr/local/app/backend"
+    networks:
+      - frontend_network
+networks:
+  frontend_network:
+    driver: bridge
