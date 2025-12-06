@@ -1,4 +1,5 @@
 import imghdr
+import logging
 import pathlib
 
 import flask
@@ -6,6 +7,7 @@ import werkzeug
 import decouple
 import werkzeug.utils
 
+_logger = logging.getLogger(__name__)
 _module_dir = pathlib.Path(__file__).parent.resolve()
 _frontend_dir = _module_dir / "../../frontend"
 _upload_dir: pathlib.Path = decouple.config("UPLOAD_DIR", default=str(_module_dir / "uploads"), cast=pathlib.Path)
@@ -14,10 +16,8 @@ _upload_dir.mkdir(parents=True, exist_ok=True)
 _ALLOWED_EXTENSIONS = {"jpg", "png", "bmp", "jpeg"}
 app = flask.Flask("image_uploader_backend", static_folder=_frontend_dir/"static")
 app.config["UPLOAD_FOLDER"] = str(_upload_dir)
-
-# @app.route("/static/<string:path>", methods=["GET"])
-# def _static(path:str):
-#     return flask.send_file(_frontend_dir / "static" / flask.request.args.get("path", ""))
+app.config["UPLOAD_EXTENSIONS"] = [f".{ext}" for ext in _ALLOWED_EXTENSIONS]
+app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024  # 25 MiB
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -25,6 +25,7 @@ def index():
         return flask.send_file(_frontend_dir / "index.html")
     else:
         files = flask.request.files.getlist("pic")
+        _logger.info("Recieved %d files from %s", len(files), flask.request.remote_addr)
         if len(files) == 0:
             raise flask.abort(400, "No file uploaded")
         for pic in files:
