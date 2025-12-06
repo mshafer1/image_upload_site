@@ -41,8 +41,10 @@ def index():
 def _handle_file_upload(pic, filename):
     file_extension = _validate_image(pic.stream)
     filename_ext = pathlib.Path(filename).suffix.lower().lstrip(".")
-    print("Received:", filename, "detected ext:", file_extension)
-    if file_extension != filename_ext or filename_ext not in _ALLOWED_EXTENSIONS:
+    _logger.info("Received:", filename, "detected ext:", file_extension)
+    file_exensions_are_both_jpge = file_extension in {"jpg", "jpeg"} and filename_ext in {"jpg", "jpeg"}
+    if (file_extension != filename_ext and not file_exensions_are_both_jpge) or filename_ext not in _ALLOWED_EXTENSIONS:
+        _logger.warning("Rejecting %s due to mismatched extension: %s != %s", filename, file_extension, filename_ext)
         raise flask.abort(400, "Invalid image")
         
     pic.save(_upload_dir / filename)
