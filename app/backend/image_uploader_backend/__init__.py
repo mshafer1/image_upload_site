@@ -6,6 +6,9 @@ import flask
 import werkzeug
 import decouple
 import werkzeug.utils
+from flask_wtf import FlaskForm
+from flask_wtf.file import MultipleFileField, FileRequired
+from image_uploader_backend import _config
 
 _logger = logging.getLogger(__name__)
 _module_dir = pathlib.Path(__file__).parent.resolve()
@@ -15,20 +18,23 @@ _upload_dir.mkdir(parents=True, exist_ok=True)
 
 _ALLOWED_EXTENSIONS = {"jpg", "png", "bmp", "jpeg"}
 app = flask.Flask("image_uploader_backend", static_folder=_frontend_dir/"static")
+app.secret_key = _config.secret_key
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["UPLOAD_FOLDER"] = str(_upload_dir)
 app.config["UPLOAD_EXTENSIONS"] = [f".{ext}" for ext in _ALLOWED_EXTENSIONS]
 app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024  # 25 MiB
 
+class PhotoForm(FlaskForm):
+    photo = MultipleFileField(validators=[FileRequired()])
+
 @app.route("/", methods=["GET", "POST"])
 def index():
-    if flask.request.method == "GET":
-        return flask.send_file(_frontend_dir / "index.html")
-    else:
-        files = flask.request.files.getlist("pic")
-        _logger.info("Recieved %d files from %s", len(files), flask.request.remote_addr)
-        if len(files) == 0:
-            raise flask.abort(400, "No file uploaded")
-        for pic in files:
+    form = PhotoForm()
+
+    if form.validate_on_submit():
+        _logger.info("Received %d files from %s", len(form.photo.data), flask.request.remote_addr)
+        for pic in form.photo.data:
             if not pic:
                 raise flask.abort(400, "No file uploaded")
             
@@ -38,6 +44,8 @@ def index():
             
             _handle_file_upload(pic, filename)
         return flask.Response("File uploaded successfully", status=200)
+    else:
+        return flask.send_file(_frontend_dir / "index.html")
 
 def _handle_file_upload(pic, filename):
     file_extension = _validate_image(pic.stream)
