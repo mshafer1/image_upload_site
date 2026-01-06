@@ -11,6 +11,10 @@ python = "^3.9"
 flask = "^3.1.2"
 python-decouple = "^3.8"
 
+# [project.optional-dependencies]
+# server = [
+#     "uwsgi (>=2.0.31,<3.0.0)",
+# ]
 
 [build-system]
 requires = ["poetry-core"]
