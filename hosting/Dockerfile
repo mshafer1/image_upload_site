@@ -1,4 +1,4 @@
-FROM python:3.13 AS base
+FROM python:3.14 AS base
 
 RUN apt-get update && apt-get upgrade -y --auto-remove
 
